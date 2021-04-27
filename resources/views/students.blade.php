@@ -64,7 +64,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="studentForm">
+                    <form id="studentForm" method="post">
                         @csrf
                         <div class="form-group">
                             <label for="firstname">First Name</label>
@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="phone">First Name</label>
+                            <label for="phone">Phone</label>
                             <input type="text" class="form-control" id="phone">
                         </div>
                         <div class="modal-footer">
@@ -94,5 +94,37 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $('#studentForm').submit(function (e) {
+            e.preventDefault();
+            let firstname = $("#firstname").val();
+            let lastname  = $("#lastname").val();
+            let email     = $("#email").val();
+            let phone     = $("#phone").val();
+            let _token    = $("input[name=_token]").val();
+
+            $.ajax({
+                url: "{{ route('student.add') }}",
+                type: "POST",
+                data:{
+                    firstname:firstname,
+                    lastname:lastname,
+                    email:email,
+                    phone:phone,
+                    _token:_token
+                },
+                success:function (response) {
+                    if (response)
+                    {
+                        $("#studentTable tbody").prepend('<tr><td>'+response.firstname+'</td><td>'+response.lastname+'</td><td>'+response.email+'</td><td>'+response.phone+'</td></tr>');
+                        $('#studentForm')[0].reset();
+                        $('#studentModal').modal('hide');
+                    }
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
